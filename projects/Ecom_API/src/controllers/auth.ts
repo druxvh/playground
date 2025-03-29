@@ -9,7 +9,7 @@ import { SignUpSchema } from "../schema/user.js";
 export async function handleSignUp(req: Request, res: Response) {
     try {
         const validateData = SignUpSchema.parse(req.body) // Checks the validation on the req body object
-        const { email, password, name, role = "User" } = validateData
+        const { name, email, password, address, role = "User", } = validateData
 
         const existingUser = await prisma.user.findUnique({ where: { email: email } })
 
@@ -23,7 +23,8 @@ export async function handleSignUp(req: Request, res: Response) {
                 name: name,
                 email: email,
                 password: hashSync(password, 10),
-                role
+                address: address,
+                role: role
             }
         })
 

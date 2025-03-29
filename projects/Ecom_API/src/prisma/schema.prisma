@@ -16,12 +16,14 @@ datasource db {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  name     String?
-  email    String     @unique
-  password String
-  role     Role       @default(User)
-  Cart     CartItem[]
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String     @unique
+  password  String
+  address   String     @default("NA")
+  role      Role       @default(User)
+  cartItems CartItem[]
+  orders    Order[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -30,12 +32,13 @@ model User {
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name        String
   description String
   price       Decimal
   category    String
-  Cart        CartItem[]
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -58,7 +61,46 @@ model CartItem {
   @@map("cartItems")
 }
 
+model Order {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  userAddress String
+  totalAmount Decimal
+  status      OrderStatus @default(Pending)
+  orderItems  OrderItem[]
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("orderItems")
+}
+
 enum Role {
   User
   Admin
+}
+
+enum OrderStatus {
+  Pending
+  Accepted
+  Out_For_Delivery
+  Delivered
+  Cancelled
 }
