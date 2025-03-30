@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../index.js";
 import { AuthRequest } from "../types/types.js";
+import { stat } from "fs";
 
 export async function handleCreateOrder(req: AuthRequest, res: Response) {
     const userId = Number(req.user?.id)
@@ -121,4 +122,43 @@ export async function handleGetOrderById(req: Request, res: Response) {
     } catch (error) {
         res.status(400).json({ message: "Error fetching the order" })
     }
+}
+
+
+export async function handleListAllOrders(req: Request, res: Response) {
+    let whereClause = {}
+    const status = req.params?.status
+    const skip = Number(req.query?.skip) || 0
+
+    if (status) {
+        whereClause = { status }
+    }
+
+    const orders = await prisma.order.findMany({
+        where: whereClause,
+        skip: skip,
+        take: 25
+    })
+
+    res.status(200).json(orders)
+
+}
+export async function handleChangeOrderStatus(req: Request, res: Response) {
+    const orderId = Number(req.params?.id)
+
+    const order = await prisma.order.update({
+        where: { id: orderId },
+        data: { status: req.body.status }
+    })
+
+    res.status(200).json(order)
+}
+export async function handleListUserOrdersById(req: Request, res: Response) {
+    const userId = Number(req.params?.id)
+
+    const order = await prisma.order.findMany({
+        where: { userId: userId },
+    })
+
+    res.status(200).json(order)
 }

@@ -42,7 +42,7 @@ export async function handleUpdateProductById(req: Request, res: Response) {
 }
 export async function handleDeleteProductById(req: Request, res: Response) {
     try {
-         await prisma.product.delete({
+        await prisma.product.delete({
             where: { id: +req.params.id } // '+' typecasts the string to a number
         })
         res.status(200).json({ message: "Product Deleted Successfully!" })
@@ -82,4 +82,25 @@ export async function handleListProducts(req: Request, res: Response) {
     } catch (error) {
         res.status(500).json({ error: "Something went wrong!" });
     }
+}
+
+export async function handleSearchProducts(req: Request, res: Response) {
+    const query = String(req.query?.q)
+
+    const products = await prisma.product.findMany({
+        where: {
+            name: {
+                search: query
+            },
+            description: {
+                search: query
+            },
+            category: {
+                search: query
+            }
+        }
+    })
+
+    res.status(200).json(products)
+
 }
