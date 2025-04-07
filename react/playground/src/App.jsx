@@ -1,4 +1,5 @@
 import "./App.css";
+import ThemeBtn, { ThemeContext } from "./hooks/useContext";
 import ReducerCounter from "./hooks/useReducer";
 import { Counter, StopWatch } from "./hooks/useRef";
 
@@ -7,8 +8,13 @@ function App() {
     <>
       {/* <Counter />
       <StopWatch /> */}
-      <ReducerCounter />
+      {/* <ReducerCounter /> */}
+
+      <ThemeContext.Provider value="light">
+        <ThemeBtn />
+      </ThemeContext.Provider>
     </>
+    
   );
 }
 
