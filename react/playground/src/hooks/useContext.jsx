@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 
 // often keep the context in a seperate file (good practice)
+// eslint-disable-next-line react-refresh/only-export-components
 export const ThemeContext = createContext("light");
 
 function ThemeBtn() {

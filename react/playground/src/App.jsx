@@ -1,4 +1,5 @@
 import "./App.css";
+import ReactVideoPlayer from "./components/react-player";
 import ThemeBtn, { ThemeContext } from "./hooks/useContext";
 import ReducerCounter from "./hooks/useReducer";
 import { Counter, StopWatch } from "./hooks/useRef";
@@ -9,12 +10,12 @@ function App() {
       {/* <Counter />
       <StopWatch /> */}
       {/* <ReducerCounter /> */}
+      <ReactVideoPlayer />
 
-      <ThemeContext.Provider value="light">
+      {/* <ThemeContext.Provider value="light">
         <ThemeBtn />
-      </ThemeContext.Provider>
+      </ThemeContext.Provider> */}
     </>
-    
   );
 }
 
