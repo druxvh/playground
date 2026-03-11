@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Broadcast Chat App</title>
+  </head>
+  <body>
+    <h2>Simple Broadcast Chat</h2>
+    <div
+      id="messages"
+      style="height: 200px; overflow-y: scroll; border: 1px solid #ccc"
+    ></div>
+    <input type="text" id="username" placeholder="Your Username" />
+    <input type="text" id="messageInput" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+      const socket = new WebSocket("ws://localhost:8080");
+      const messagesDiv = document.getElementById("messages");
+
+      // When a message arrives from the server
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        const msgElement = document.createElement("div");
+        msgElement.innerHTML = `<strong>${data.user}</strong> <small>(${data.time}):</small> ${data.text}`;
+        messagesDiv.appendChild(msgElement);
+
+        // Auto-scroll to bottom
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      };
+
+      function sendMessage() {
+        const username = document.getElementById("username");
+        const input = document.getElementById("messageInput");
+
+        if (!username.value) return alert("Enter a username");
+
+        // package data into a json obj
+        const payload = {
+          user: username.value,
+          text: input.value,
+        };
+
+        socket.send(JSON.stringify(payload));
+        input.value = "";
+      }
+    </script>
+  </body>
+</html>
